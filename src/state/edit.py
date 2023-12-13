@@ -5,11 +5,6 @@ from .statei import State
 class EditState(State):
     screen: scr.Screen
 
-    def __init__(self, time_screen, controller):
-        super().__init__(controller)
-        self.time_screen = time_screen
-        self.screen = scr.EditScreen(time_screen)
-
     def iteration(self):
         self.screen.iteration()
 

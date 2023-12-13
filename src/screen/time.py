@@ -1,12 +1,12 @@
 from screen import Screen
 import adafruit_ssd1306
-import time
 import datetime
+
 
 class TimeScreen(Screen):
     def __init__(self, display: adafruit_ssd1306.SSD1306_I2C):
         self.display = display
-        self.time = datetime.datetime.now()
+        self.time = datetime.datetime.now().time()
 
     def iteration(self):
         self.display.fill_rect(17, 9, 94, 16, 0)

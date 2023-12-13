@@ -6,11 +6,9 @@ import datetime as dt
 class AlarmState(State):
     screen: scr.Screen
 
-    def __init__(self, time_screen, controller):
+    def __init__(self, controller):
         super().__init__(controller)
-        self.time_screen = time_screen
-        time_screen.time = dt.datetime.combine(dt.datetime.today(), controller.config.alarm_time)
-        self.screen = scr.AlarmScreen(time_screen)
+        self.screen = scr.AlarmScreen(controller.display, controller.config.alarm_time)
 
     def iteration(self):
         self.screen.iteration()
@@ -18,7 +16,7 @@ class AlarmState(State):
 
     def left_button(self):
         from .watch import WatchState
-        self.controller.change_state(WatchState(self.time_screen, self.controller))
+        self.controller.change_state(WatchState(self.controller))
 
     def right_button(self):
         pass
@@ -28,4 +26,4 @@ class AlarmState(State):
 
     def left_button_held(self):
         from .edit_alarm import EditAlarmState
-        self.controller.change_state(EditAlarmState(self.time_screen, self.controller))
+        self.controller.change_state(EditAlarmState(self.controller))

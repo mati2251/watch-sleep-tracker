@@ -7,17 +7,16 @@ import time
 class CountdownState(State):
     screen: scr.Screen
 
-    def __init__(self, time_screen, controller):
+    def __init__(self, controller):
         super().__init__(controller)
-        self.time_screen = time_screen
-        self.screen = scr.CountdownScreen(time_screen, self.controller.config.countdown_time)
+        self.screen = scr.CountdownScreen(self.controller.display, self.controller.config.countdown_time)
 
     def iteration(self):
         self.screen.iteration()
 
     def left_button(self):
         from .alarm import AlarmState
-        self.controller.change_state(AlarmState(self.time_screen, self.controller))
+        self.controller.change_state(AlarmState(self.controller))
 
     def right_button(self):
         self.screen.start_stop()
@@ -27,4 +26,4 @@ class CountdownState(State):
 
     def left_button_held(self):
         from .edit_countdown import EditCountdownState
-        self.controller.change_state(EditCountdownState(self.time_screen, self.controller))
+        self.controller.change_state(EditCountdownState(self.controller))

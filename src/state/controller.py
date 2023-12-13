@@ -24,8 +24,9 @@ class Controller:
         i2c = busio.I2C(SCL, SDA)
         display = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c)
         display.rotate(180)
+        self.display = display
         from .watch import WatchState
-        self.state = WatchState(screen.TimeScreen(display), self)
+        self.state = WatchState(self)
         self.left_button = Button(4)
         self.right_button = Button(17)
         self.left_button.when_released = self.left_button_released
