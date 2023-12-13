@@ -6,6 +6,7 @@ import adafruit_ssd1306
 import busio
 from gpiozero import Button
 from dataclasses import dataclass
+import threading
 import datetime
 
 
@@ -15,10 +16,11 @@ class Config:
     alarm_enabled: bool
     countdown_time: datetime.time
 
+
 class Controller:
     left_held = False
     right_held = False
-    config = Config(datetime.time(7, 0), True, datetime.time(0, 20))
+    config = Config(datetime.time(21, 18, 30), True, datetime.time(0, 20))
 
     def __init__(self):
         i2c = busio.I2C(SCL, SDA)
@@ -33,6 +35,7 @@ class Controller:
         self.right_button.when_released = self.right_button_released
         self.left_button.when_held = self.left_button_held
         self.right_button.when_held = self.right_button_held
+        threading.Thread(target=self.alarm_thread).start()
 
     def change_state(self, state: State):
         self.state = state
@@ -40,7 +43,7 @@ class Controller:
     def loop(self):
         while True:
             self.state.iteration()
-            time.sleep(1 / 60)
+            time.sleep(1 / 10)
 
     def left_button_released(self):
         if self.left_held:
@@ -61,3 +64,13 @@ class Controller:
     def right_button_held(self, _):
         self.right_held = True
         self.state.right_button_held()
+
+    def alarm_thread(self):
+        while True:
+            if self.config.alarm_enabled:
+                to_next_alarm = abs(datetime.datetime.now() - datetime.datetime.combine(datetime.datetime.today(),
+                                                                                    self.config.alarm_time))
+                if to_next_alarm <= datetime.timedelta(seconds=1):
+                    from .alarm_alert import AlarmAlertState
+                    self.state = AlarmAlertState(self)
+            time.sleep(1)
