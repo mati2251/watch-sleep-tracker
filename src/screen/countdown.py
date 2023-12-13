@@ -3,12 +3,14 @@ import datetime as dt
 from screen import Screen
 
 
-class StopwatchScreen(Screen):
+class CountdownScreen(Screen):
     start_time: dt.datetime = None
-    countdown_time: dt.datetime = dt.datetime.combine(dt.datetime.today(), dt.time(0, 20, 0))
+    countdown_time: dt.datetime
 
-    def __init__(self, screen: Screen):
+    def __init__(self, screen: Screen, countdown_time: dt.time = dt.time(0, 20, 0)):
         self.screen = screen
+        self.display = screen.display
+        self.countdown_time = dt.datetime.combine(dt.datetime.today(), countdown_time)
 
     def iteration(self):
         if self.start_time is not None:

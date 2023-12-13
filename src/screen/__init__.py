@@ -1,5 +1,6 @@
 from .screen import Screen
 from .time import TimeScreen
 from .watch import WatchScreen
-from .stopwatch import StopwatchScreen
+from .countdown import CountdownScreen
 from .alarm import AlarmScreen
+from .edit import EditScreen

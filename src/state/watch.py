@@ -15,8 +15,8 @@ class WatchState(State):
         pass
 
     def left_button(self):
-        from .stopwatch import StopWatchState
-        self.controller.change_state(StopWatchState(self.time_screen, self.controller))
+        from .countdown import CountdownState
+        self.controller.change_state(CountdownState(self.time_screen, self.controller))
 
     def right_button(self):
         pass

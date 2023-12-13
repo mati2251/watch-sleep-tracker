@@ -5,11 +5,20 @@ from board import SCL, SDA
 import adafruit_ssd1306
 import busio
 from gpiozero import Button
+from dataclasses import dataclass
+import datetime
 
+
+@dataclass
+class Config:
+    alarm_time: datetime.time
+    alarm_enabled: bool
+    countdown_time: datetime.time
 
 class Controller:
     left_held = False
     right_held = False
+    config = Config(datetime.time(7, 0), True, datetime.time(0, 20))
 
     def __init__(self):
         i2c = busio.I2C(SCL, SDA)
@@ -38,7 +47,7 @@ class Controller:
             return
         self.state.left_button()
 
-    def left_button_held(self, time):
+    def left_button_held(self, _):
         self.left_held = True
         self.state.left_button_held()
 
@@ -48,6 +57,6 @@ class Controller:
             return
         self.state.right_button()
 
-    def right_button_held(self, time):
+    def right_button_held(self, _):
         self.right_held = True
         self.state.right_button_held()
