@@ -23,3 +23,14 @@ class StopwatchScreen(Screen):
     def stop(self):
         self.countdown_time = self.screen.time
         self.start_time = None
+
+    def reset(self):
+        self.stop()
+        self.countdown_time = dt.datetime.combine(dt.datetime.today(), dt.time(0, 20, 0))
+        self.screen.time = self.countdown_time
+
+    def start_stop(self):
+        if self.start_time is None:
+            self.start()
+        else:
+            self.stop()
