@@ -9,7 +9,7 @@ class AlarmAlertState(State):
 
     def __init__(self, controller):
         super().__init__(controller)
-        self.screen = scr.AlarmAlertScreen(self.controller.display)
+        self.screen = scr.AlarmAlertScreen(self.controller.display, self.controller.buzzer)
 
     def iteration(self):
         self.screen.iteration()
@@ -29,6 +29,4 @@ class AlarmAlertState(State):
     def comeback(self):
         from .watch import WatchState
         self.controller.change_state(WatchState(self.controller))
-        time.sleep(1)
-        self.controller.display.fill(0)
-        self.controller.display.show()
+        self.screen.stop()

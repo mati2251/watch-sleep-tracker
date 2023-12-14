@@ -8,6 +8,7 @@ from gpiozero import Button
 from dataclasses import dataclass
 import threading
 import datetime
+from gpiozero import TonalBuzzer
 
 
 @dataclass
@@ -27,6 +28,7 @@ class Controller:
         display = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c)
         display.rotate(180)
         self.display = display
+        self.buzzer = TonalBuzzer(12)
         from .watch import WatchState
         self.state = WatchState(self)
         self.left_button = Button(4)
@@ -35,12 +37,12 @@ class Controller:
         self.right_button.when_released = self.right_button_released
         self.left_button.when_held = self.left_button_held
         self.right_button.when_held = self.right_button_held
-        threading.Thread(target=self.alarm_thread).start()
 
     def change_state(self, state: State):
         self.state = state
 
     def loop(self):
+        threading.Thread(target=self.alarm_thread).start()
         while True:
             self.state.iteration()
             time.sleep(1 / 10)
