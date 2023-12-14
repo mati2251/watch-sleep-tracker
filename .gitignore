@@ -1,0 +1,6 @@
+.venv
+src/screen/__pycache__/
+
+# pycache ignore
+__pycache__/
+*/**/__pycache__/
