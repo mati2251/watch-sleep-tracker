@@ -4,11 +4,10 @@ from .statei import State
 from board import SCL, SDA
 import adafruit_ssd1306
 import busio
-from gpiozero import Button
+from gpiozero import Button, TonalBuzzer
 from dataclasses import dataclass
 import threading
 import datetime
-from gpiozero import TonalBuzzer
 
 
 @dataclass

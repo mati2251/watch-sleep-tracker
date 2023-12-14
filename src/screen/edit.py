@@ -12,8 +12,7 @@ class EditScreen(TimeScreen):
         super().__init__(display)
         self.time = time
 
-    def iteration(self):
-        self.display.fill_rect(17, 9, 64, 16, 0)
+    def iteration(self, to: int = 1):
         self.blink_time_iterator += 1
         if self.blink_time_iterator >= 8:
             self.blink_time_iterator = 0
@@ -21,13 +20,13 @@ class EditScreen(TimeScreen):
         if self.is_flash:
             super().iteration()
         else:
-            self.display.fill(0)
+            self.display.fill_rect(89 - (36 * to), 9, 22, 16, 0)
             self.display.show()
             self.blink_time_iterator += 2
         pass
 
-    def add_minute(self):
-        self.time = (dt.datetime.combine(dt.datetime.today(), self.time) + dt.timedelta(minutes=1)).time()
+    def add(self, to: str):
+        self.time = (dt.datetime.combine(dt.datetime.today(), self.time) + dt.timedelta(**{to: 1})).time()
 
-    def subtract_minute(self):
-        self.time = (dt.datetime.combine(dt.datetime.today(), self.time) - dt.timedelta(minutes=1)).time()
+    def subtract(self, to: str):
+        self.time = (dt.datetime.combine(dt.datetime.today(), self.time) - dt.timedelta(**{to: 1})).time()
