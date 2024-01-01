@@ -1,4 +1,3 @@
-from screen import Screen
 import datetime
 from .time import TimeScreen
 import adafruit_ssd1306

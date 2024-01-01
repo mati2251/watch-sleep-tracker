@@ -1,4 +1,3 @@
-from screen import Screen
 import datetime as dt
 from .time import TimeScreen
 import adafruit_ssd1306
@@ -18,11 +17,15 @@ class EditScreen(TimeScreen):
             self.blink_time_iterator = 0
             self.is_flash = not self.is_flash
         if self.is_flash:
+            super().clear()
             super().iteration()
         else:
             self.display.fill_rect(89 - (36 * to), 9, 22, 16, 0)
             self.display.show()
             self.blink_time_iterator += 2
+        pass
+    
+    def clear(self):
         pass
 
     def add(self, to: str):

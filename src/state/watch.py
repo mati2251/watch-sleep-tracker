@@ -10,6 +10,7 @@ class WatchState(State):
         self.screen = scr.WatchScreen(controller.display)
 
     def iteration(self):
+        self.screen.clear()
         self.screen.iteration()
         pass
 

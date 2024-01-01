@@ -1,17 +1,16 @@
-import time
-
 import screen as scr
 from .statei import State
 
 
-class AlarmAlertState(State):
-    screen: scr.Screen
+class AlertState(State):
+    screen: scr.AlertScreen
 
     def __init__(self, controller):
         super().__init__(controller)
-        self.screen = scr.AlarmAlertScreen(self.controller.display, self.controller.buzzer)
+        self.screen = scr.AlertScreen(self.controller.display, self.controller.buzzer)
 
     def iteration(self):
+        self.screen.clear()
         self.screen.iteration()
 
     def left_button(self):

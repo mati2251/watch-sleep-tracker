@@ -4,4 +4,4 @@ from .watch import WatchScreen
 from .countdown import CountdownScreen
 from .alarm import AlarmScreen
 from .edit import EditScreen
-from .alarm_alert import AlarmAlertScreen
+from .alarm_alert import AlertScreen

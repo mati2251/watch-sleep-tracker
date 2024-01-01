@@ -9,7 +9,8 @@ class TimeScreen(Screen):
         self.time = datetime.datetime.now().time()
 
     def iteration(self):
-        self.display.fill_rect(17, 9, 94, 16, 0)
         self.display.text(self.time.strftime("%H:%M:%S"), 17, 9, 1, size=2)
         self.display.show()
 
+    def clear(self):
+        self.display.fill_rect(17, 0, 111, 25, 0)

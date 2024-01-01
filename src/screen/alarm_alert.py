@@ -1,12 +1,11 @@
 import time
 
 from screen import Screen
-import datetime
 import adafruit_ssd1306
 from gpiozero import TonalBuzzer
 
 
-class AlarmAlertScreen(Screen):
+class AlertScreen(Screen):
     blink_time_iterator = 0
     is_flash = True
     next_tone = 0
@@ -33,6 +32,9 @@ class AlarmAlertScreen(Screen):
             self.display.show()
         self.buzzer.play(self.tones[self.next_tone % len(self.tones)])
         self.next_tone += 1
+
+    def clear(self):
+        self.buzzer.stop()
 
     def stop(self):
         time.sleep(0.2)

@@ -10,3 +10,7 @@ class Screen(ABC):
     @abstractmethod
     def iteration(self):
         pass
+
+    @abstractmethod
+    def clear(self):
+        pass 
