@@ -1,4 +1,4 @@
 GPIO 2,3 - display
-GPIO 4 - button left
-GPIO 17 - button right
+GPIO 17 - button left
+GPIO 4 - button right
 GPIO 12 - speaker

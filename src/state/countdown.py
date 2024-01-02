@@ -1,23 +1,21 @@
-import datetime
-
 import screen as scr
 from .statei import State
-import RPi.GPIO as GPIO
 import datetime as dt
 
 
 class CountdownState(State):
-    screen: scr.Screen
+    screen: scr.CountdownScreen
 
     def __init__(self, controller):
         super().__init__(controller)
         self.screen = scr.CountdownScreen(self.controller.display, self.controller.config.countdown_time)
 
     def iteration(self):
+        self.screen.clear()
         self.screen.iteration()
         if self.screen.time < dt.time(0, 0, 1, 0):
-            from .alarm_alert import AlarmAlertState
-            self.controller.change_state(AlarmAlertState(self.controller))
+            from .alarm_alert import AlertState
+            self.controller.change_state(AlertState(self.controller))
 
     def left_button(self):
         from .alarm import AlarmState

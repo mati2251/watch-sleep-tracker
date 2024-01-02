@@ -1,16 +1,16 @@
 import screen as scr
 from .statei import State
-import datetime as dt
 
 
 class AlarmState(State):
-    screen: scr.Screen
+    screen: scr.AlarmScreen
 
     def __init__(self, controller):
         super().__init__(controller)
-        self.screen = scr.AlarmScreen(controller.display, controller.config.alarm_time)
+        self.screen = scr.AlarmScreen(controller.display, controller.config.alarm_time, controller.config.alarm_enabled)
 
     def iteration(self):
+        self.screen.clear()
         self.screen.iteration()
         pass
 
@@ -19,6 +19,8 @@ class AlarmState(State):
         self.controller.change_state(WatchState(self.controller))
 
     def right_button(self):
+        self.controller.config.alarm_enabled = not self.controller.config.alarm_enabled
+        self.screen.enable = self.controller.config.alarm_enabled
         pass
 
     def right_button_held(self):

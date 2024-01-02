@@ -1,5 +1,4 @@
 import datetime as dt
-from screen import Screen
 from .time import TimeScreen
 import adafruit_ssd1306
 

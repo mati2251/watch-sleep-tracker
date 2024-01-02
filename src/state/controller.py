@@ -1,4 +1,3 @@
-import screen
 import time
 from .statei import State
 from board import SCL, SDA
@@ -20,7 +19,7 @@ class Config:
 class Controller:
     left_held = False
     right_held = False
-    config = Config(datetime.time(21, 18, 30), True, datetime.time(0, 20))
+    config = Config(datetime.time(7, 00, 00), True, datetime.time(0, 20))
 
     def __init__(self):
         i2c = busio.I2C(SCL, SDA)
@@ -30,8 +29,8 @@ class Controller:
         self.buzzer = TonalBuzzer(12)
         from .watch import WatchState
         self.state = WatchState(self)
-        self.left_button = Button(4)
-        self.right_button = Button(17)
+        self.left_button = Button(17)
+        self.right_button = Button(4)
         self.left_button.when_released = self.left_button_released
         self.right_button.when_released = self.right_button_released
         self.left_button.when_held = self.left_button_held
@@ -72,6 +71,6 @@ class Controller:
                 to_next_alarm = abs(datetime.datetime.now() - datetime.datetime.combine(datetime.datetime.today(),
                                                                                     self.config.alarm_time))
                 if to_next_alarm <= datetime.timedelta(seconds=1):
-                    from .alarm_alert import AlarmAlertState
-                    self.state = AlarmAlertState(self)
+                    from .alarm_alert import AlertState
+                    self.state = AlertState(self)
             time.sleep(1)

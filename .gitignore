@@ -1,6 +1,5 @@
 .venv
-src/screen/__pycache__/
-
+pyrightconfig.json
 # pycache ignore
 __pycache__/
 */**/__pycache__/

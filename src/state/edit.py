@@ -3,11 +3,12 @@ from .statei import State
 
 
 class EditState(State):
-    screen: scr.Screen
+    screen: scr.EditScreen
     current_type = 1
     types = ['seconds', 'minutes', 'hours']
 
     def iteration(self):
+        self.screen.clear()
         self.screen.iteration(self.current_type)
 
     def left_button(self):
