@@ -1,5 +1,6 @@
 .venv
 pyrightconfig.json
+dev/heartrate/hr-sensor.txt
 # pycache ignore
 __pycache__/
 */**/__pycache__/
