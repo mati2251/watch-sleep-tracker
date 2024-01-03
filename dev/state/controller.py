@@ -7,8 +7,8 @@ from gpiozero import Button, TonalBuzzer
 from dataclasses import dataclass
 import threading
 import datetime
-
-
+from heartrate import HeartRateMonitor 
+import asyncio
 @dataclass
 class Config:
     alarm_time: datetime.time
@@ -41,6 +41,7 @@ class Controller:
 
     def loop(self):
         threading.Thread(target=self.alarm_thread).start()
+        threading.Thread(target=self.hr_thread).start()
         while True:
             self.state.iteration()
             time.sleep(1 / 10)
@@ -74,3 +75,7 @@ class Controller:
                     from .alarm_alert import AlertState
                     self.state = AlertState(self)
             time.sleep(1)
+
+    def hr_thread(self):
+        monitor = HeartRateMonitor("B2:EF:04:D1:37:B4", "00002a37-0000-1000-8000-00805f9b34fb")
+        asyncio.run(monitor.start_monitoring())
