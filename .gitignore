@@ -4,6 +4,7 @@ dev/heartrate/hr-sensor.txt
 hr-sensor.txt
 database.db
 dev/database.db
+web/static/js
 # pycache ignore
 __pycache__/
 */**/__pycache__/
