@@ -34,7 +34,7 @@ def page():
                     GROUP BY Time(Timestamp - Timestamp%10, \'unixepoch\'  )ORDER BY Timestamp 
                     """ , args = [date])))
     stats = query_db("""
-                     SELECT round(AVG(hr)), MIN(hr), round(AVG(Stress_Score)) 
+                     SELECT round(AVG(hr)), MIN(hr), round(AVG(Stress_Score)), time(MAX(Timestamp)%86400- MIN(Timestamp)%86400, 'unixepoch')
                      FROM heart_rate_data WHERE Date = ?;
                     """, args = [date], one=True)
     hr = json.dumps(data[0]) if len(data) > 0 else json.dumps([])
@@ -42,7 +42,8 @@ def page():
     low = stats[1] if stats[1] is not None else 0
     avg = stats[0] if stats[0] is not None else 0
     stress = stats[2] if stats[2] is not None else 0
-    return render_template('index.html', hr=hr, labels=labels, low=low, avg=avg, stress=stress, date=date)
+    time = stats[3] if stats[3] is not None else 0
+    return render_template('index.html', hr=hr, labels=labels, low=low, avg=avg, stress=stress, date=date, time=time)
 
 @app.teardown_appcontext
 def close_connection(_):
