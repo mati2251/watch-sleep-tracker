@@ -16,14 +16,14 @@ class HeartRateMonitor:
 
     async def start_monitoring(self):
         while True:
-            self.date = datetime.date.today()
-            if datetime.datetime.now().time() < datetime.time(17, 00, 00):
-                self.date = self.date + datetime.timedelta(days=1)
             async with BleakScanner(self.scan_handler) as scanner:
                 await self.event.wait()
                 self.event.clear()
                 await scanner.stop()
-            async with  BleakClient(self.address, disconnected_callback=self.disconnect_handler, timeout=10) as client:
+            self.date = datetime.date.today()
+            if datetime.datetime.now().time() > datetime.time(17, 00, 00):
+                self.date = self.date + datetime.timedelta(days=1)
+            async with BleakClient(self.address, disconnected_callback=self.disconnect_handler, timeout=10) as client:
                 if not client.is_connected:
                     await client.connect()
                 print("Connected to device with address:", self.address, datetime.datetime.now())

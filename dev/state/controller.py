@@ -78,6 +78,6 @@ class Controller:
 
     def hr_thread(self):
         with open("hr-sensor.txt", "r") as f:
-            mac = f.read()
+            mac = f.read(18)
             monitor = HeartRateMonitor(mac, "00002a37-0000-1000-8000-00805f9b34fb")
             asyncio.run(monitor.start_monitoring())
