@@ -77,5 +77,7 @@ class Controller:
             time.sleep(1)
 
     def hr_thread(self):
-        monitor = HeartRateMonitor("B2:EF:04:D1:37:B4", "00002a37-0000-1000-8000-00805f9b34fb")
-        asyncio.run(monitor.start_monitoring())
+        with open("hr-sensor.txt", "r") as f:
+            mac = f.read()
+            monitor = HeartRateMonitor(mac, "00002a37-0000-1000-8000-00805f9b34fb")
+            asyncio.run(monitor.start_monitoring())
