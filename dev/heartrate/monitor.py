@@ -1,7 +1,7 @@
 import datetime
 import asyncio
+from .analyzer import (calculate_sdnn, calculate_rmssd, calculate_stress_score)
 from bleak import BleakClient, BleakScanner
-import analyzer as HeartRateAnalyzer
 from .database import HeartRateDatabase, HeartRateTuple
 
 class HeartRateMonitor:
@@ -45,9 +45,9 @@ class HeartRateMonitor:
         interval = int(60000 / data[1])
         current_timestamp = int(datetime.datetime.now().timestamp())
         if self.ibi_value != 0:
-            rmssd = HeartRateAnalyzer.calculate_rmssd([self.ibi_value, interval])
-            sdnn = HeartRateAnalyzer.calculate_sdnn([self.ibi_value, interval])
-            stress_score = HeartRateAnalyzer.calculate_stress_score(data[1], rmssd, sdnn)
+            rmssd = calculate_rmssd([self.ibi_value, interval])
+            sdnn = calculate_sdnn([self.ibi_value, interval])
+            stress_score = calculate_stress_score(data[1], rmssd, sdnn)
             data = HeartRateTuple(data[1], interval, rmssd, sdnn, stress_score, current_timestamp, self.date)
             self.hr_db.insert(data)
         self.ibi_value = interval
