@@ -1,5 +1,8 @@
 from flask import Flask, json, g, render_template, request
 from flask_cors import CORS
+from scipy.signal import savgol_filter
+import numpy as np
+from scipy.interpolate import CubicSpline
 import sqlite3
 import datetime
 
@@ -25,7 +28,6 @@ def query_db(query, args=(), one=False):
 @app.route('/', methods=['GET'])
 def page():
     date = request.args.get('date') if request.args.get('date') else datetime.date.today().strftime("%Y-%m-%d")
-    print(date)
     data = list(zip(*query_db("""
                     SELECT
                     hr, Time(Timestamp - Timestamp%10, \'unixepoch\', \'localtime\')
@@ -43,7 +45,24 @@ def page():
     avg = stats[0] if stats[0] is not None else 0
     stress = stats[2] if stats[2] is not None else 0
     time = stats[3] if stats[3] is not None else 0
-    return render_template('index.html', hr=hr, labels=labels, low=low, avg=avg, stress=stress, date=date, time=time)
+    hr_int = [int(i) for i in data[0]]
+    y_smooth = savgol_filter(hr_int, 1000, 2).tolist()
+    corellation = abs( np.corrcoef(range(len(y_smooth)), y_smooth)[0,1])
+    analysis = "Probably, your sleep was good"
+    deg = 3 
+    if corellation > 0.7:
+        deg = 1
+        analysis = "You ate something before sleep, and your metabolism is working"
+    p = np.polyfit(range(len(y_smooth)), y_smooth, deg=deg)
+    slope = abs(p[0])
+    if slope < 0.00001 and corellation > 0.7:
+        analysis = "Check your avg heart rate. If it is high, you didn't relax during sleep."
+    x_new = range(len(y_smooth))
+    trend = np.polyval(p, x_new)
+    trend_json = json.dumps(trend.tolist())
+    if y_smooth[0] < y_smooth[len(y_smooth) // 10 ]:
+        analysis = "You went to sleep too fast/late."
+    return render_template('index.html', hr=hr, labels=labels, low=low, avg=avg, stress=stress, date=date, time=time, trend=trend_json, analysis=analysis)
 
 @app.teardown_appcontext
 def close_connection(_):
