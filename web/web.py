@@ -39,14 +39,19 @@ def page():
                      SELECT round(AVG(hr)), MIN(hr), round(AVG(Stress_Score)), time(MAX(Timestamp)%86400- MIN(Timestamp)%86400, 'unixepoch')
                      FROM heart_rate_data WHERE Date = ?;
                     """, args = [date], one=True)
-    hr = json.dumps(data[0]) if len(data) > 0 else json.dumps([])
-    labels = json.dumps(data[1]) if len(data) > 0 else json.dumps([])
-    low = stats[1] if stats[1] is not None else 0
-    avg = stats[0] if stats[0] is not None else 0
-    stress = stats[2] if stats[2] is not None else 0
-    time = stats[3] if stats[3] is not None else 0
+    if len(data) == 0:
+        return render_template('index.html', hr="[]", labels="[]", low=0, avg=0, stress=0, date=date, time=0, trend="[]", analysis="No data for this date")
+    hr = json.dumps(data[0]) 
+    labels = json.dumps(data[1]) 
+    low = stats[1] 
+    avg = stats[0]
+    stress = stats[2]
+    time = stats[3]
     hr_int = [int(i) for i in data[0]]
-    y_smooth = savgol_filter(hr_int, 1000, 2).tolist()
+    window_size = 1000
+    if len(hr_int) < 1000:
+        window_size = len(hr_int) // 10
+    y_smooth = savgol_filter(hr_int, window_size, 2).tolist()
     corellation = abs( np.corrcoef(range(len(y_smooth)), y_smooth)[0,1])
     analysis = "Probably, your sleep was good"
     deg = 3 
