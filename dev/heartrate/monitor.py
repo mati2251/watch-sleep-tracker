@@ -3,6 +3,7 @@ import asyncio
 from .analyzer import (calculate_sdnn, calculate_rmssd, calculate_stress_score)
 from bleak import BleakClient, BleakScanner
 from .database import HeartRateDatabase, HeartRateTuple
+import time
 
 class HeartRateMonitor:
     def __init__(self, address, hr_measurement_char_uuid):
@@ -19,19 +20,25 @@ class HeartRateMonitor:
             async with BleakScanner(self.scan_handler) as scanner:
                 await self.event.wait()
                 self.event.clear()
+                self.date = datetime.date.today()
+                if datetime.datetime.now().time() > datetime.time(17, 00, 00):
+                    self.date = self.date + datetime.timedelta(days=1)
+                client = BleakClient(self.address, disconnected_callback=self.disconnect_handler, timeout=30)
                 await scanner.stop()
-            self.date = datetime.date.today()
-            if datetime.datetime.now().time() > datetime.time(17, 00, 00):
-                self.date = self.date + datetime.timedelta(days=1)
-            async with BleakClient(self.address, disconnected_callback=self.disconnect_handler, timeout=10) as client:
-                if not client.is_connected:
-                    await client.connect()
-                print("Connected to device with address:", self.address, datetime.datetime.now())
-                await client.start_notify(self.hr_measurement_char_uuid, self.handle_rr_intervals)
-                await self.event.wait()
-                self.event.clear()
-                await client.disconnect()
-            self.ibi_value = 0
+                try:
+                    if not client.is_connected:
+                        await client.connect()
+                    print("Connected to device with address:", self.address, datetime.datetime.now())
+                    await client.start_notify(self.hr_measurement_char_uuid, self.handle_rr_intervals)
+                    await self.event.wait()
+                    self.event.clear()
+                except Exception as e:
+                    print(e)
+                finally:
+                    await client.disconnect()
+                self.ibi_value = 0
+                time.sleep(60)
+                
 
     def scan_handler(self, device, _):
         if device.address == self.address:
